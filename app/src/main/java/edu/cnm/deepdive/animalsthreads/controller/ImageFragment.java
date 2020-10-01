@@ -73,7 +73,6 @@ public class ImageFragment extends Fragment {
       try {
         Response<ApiKey> response1 = animalService.getApiKey().execute();
         assert response1.body() != null;
-        System.out.println("MESSAGE " + response1.body().getMessage());
         ApiKey key = response1.body();
         final String clientKey = key.getKey();
         Response<List<Animal>> response = animalService

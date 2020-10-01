@@ -1,5 +1,8 @@
 package edu.cnm.deepdive.animalsthreads.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Animal {
 
   private String name;
@@ -13,8 +16,10 @@ public class Animal {
   private String diet;
 
   private String lifespan;
-  
-  private String url;
+
+  @Expose
+  @SerializedName("image")
+  private String imageUrl;
 
   public String getName() {
     return name;
@@ -64,11 +69,11 @@ public class Animal {
     this.lifespan = lifespan;
   }
 
-  public String getUrl() {
-    return url;
+  public String getImageUrl() {
+    return imageUrl;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 }

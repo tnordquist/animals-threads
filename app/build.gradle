@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+def getProperty(String propertyFile, String propertyName) {
+    Properties properties = new Properties();
+    properties.load(new FileInputStream(propertyFile));
+    return String.format("\"%s\"", properties.getProperty(propertyName));
+}
+
+
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -36,7 +44,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.0'
 
     // Gson (JSON parser) dependency
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // retrofit dependencies
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'

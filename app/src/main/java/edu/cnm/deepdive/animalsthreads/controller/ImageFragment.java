@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.animalsthreads.controller;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,18 +10,16 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.cnm.deepdive.animalsthreads.BuildConfig;
 import edu.cnm.deepdive.animalsthreads.R;
 import edu.cnm.deepdive.animalsthreads.model.Animal;
 import edu.cnm.deepdive.animalsthreads.model.ApiKey;
 import edu.cnm.deepdive.animalsthreads.service.AnimalService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -53,50 +52,61 @@ public class ImageFragment extends Fragment {
     settings.setDisplayZoomControls(false);
     settings.setUseWideViewPort(true);
     settings.setLoadWithOverviewMode(true);
-    new Retriever().start();
+    new RetrieveImageTask().execute();
   }
 
-  private class Retriever extends Thread {
+  private class RetrieveImageTask extends AsyncTask<Void, Void, List<Animal>> {
+
+    AnimalService animalService;
 
     @Override
-    public void run() {
+    protected void onPreExecute() {
+      super.onPreExecute();
       Gson gson = new GsonBuilder()
           .excludeFieldsWithoutExposeAnnotation()
           .create();
       Retrofit retrofit = new Retrofit.Builder()
-          .baseUrl("https://us-central1-apis-4674e.cloudfunctions.net/")
+          .baseUrl(BuildConfig.BASE_URL)
           .addConverterFactory(GsonConverterFactory.create(gson))
           .build();
 
-      AnimalService animalService = retrofit.create(AnimalService.class);
+      animalService = retrofit.create(AnimalService.class);
+    }
 
+    protected List<Animal> doInBackground(Void... voids) {
       try {
         Response<ApiKey> response1 = animalService.getApiKey().execute();
-        assert response1.body() != null;
         ApiKey key = response1.body();
+        assert key != null;
         final String clientKey = key.getKey();
         Response<List<Animal>> response = animalService
             .getAnimals(clientKey)
             .execute();
         if (response.isSuccessful()) {
           List<Animal> animals = response.body();
-          assert animals != null;
-          final String url = animals.get(2).getImageUrl();
-          Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              contentView.loadUrl(url);
-            }
-          });
+          return animals;
+
         } else {
           Log.e("AnimalService", response.message());
+          cancel(true);
         }
 
       } catch (IOException e) {
         Log.e("AnimalService", e.getMessage(), e);
+        cancel(true);
       }
-
+      return null;
     }
 
+    @Override
+    protected void onPostExecute(List<Animal> animals) {
+      final String url = animals.get(37).getImageUrl();
+      getActivity().runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          contentView.loadUrl(url);
+        }
+      });
+    }
   }
 }

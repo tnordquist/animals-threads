@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainViewModel extends AndroidViewModel {
 
-  private MutableLiveData<List<Animal>> animals;
+  private final MutableLiveData<List<Animal>> animals;
 
   public MainViewModel(@NonNull Application application) {
     super(application);

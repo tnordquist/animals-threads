@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
@@ -30,6 +31,7 @@ public class ImageFragment extends Fragment implements OnItemSelectedListener {
   private MainViewModel viewModel;
   private List<Animal> animals;
   private Spinner spinner;
+  private Toolbar toolbar;
 
   @Override
   public View onCreateView(LayoutInflater inflater,
@@ -37,8 +39,11 @@ public class ImageFragment extends Fragment implements OnItemSelectedListener {
       Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.fragment_image, container, false);
     setupWebView(root);
+    toolbar = root.findViewById(R.id.toolbar);
+    toolbar.setTitle(R.string.app_name);
     spinner = root.findViewById(R.id.animals_spinner);
     spinner.setOnItemSelectedListener(this);
+    ((MainActivity) getActivity()).setSupportActionBar(toolbar);
     return root;
   }
 
@@ -54,7 +59,7 @@ public class ImageFragment extends Fragment implements OnItemSelectedListener {
         ImageFragment.this.animals = animals;
         ArrayAdapter<Animal> adapter = new ArrayAdapter<>(
             Objects.requireNonNull(ImageFragment.this.getContext()),
-            android.R.layout.simple_list_item_1, ImageFragment.this.animals);
+            R.layout.custom_spinner_item, ImageFragment.this.animals);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
       }

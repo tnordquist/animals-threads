@@ -30,7 +30,7 @@ public interface AnimalService {
 
   @FormUrlEncoded
   @POST("getAnimals")
-  Single<List<Animal>> getAnimals(@Field("key") Object key);
+  Single<List<Animal>> getAnimals(@Field("key") String key);
 
   class InstanceHolder {
 

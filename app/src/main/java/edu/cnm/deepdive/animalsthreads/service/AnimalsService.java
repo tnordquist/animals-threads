@@ -10,7 +10,6 @@ import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,9 +18,9 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
-public interface AnimalService {
+public interface AnimalsService {
 
-  static AnimalService getInstance() {
+  static AnimalsService getInstance() {
     return InstanceHolder.INSTANCE;
   }
 
@@ -34,7 +33,7 @@ public interface AnimalService {
 
   class InstanceHolder {
 
-    private static final AnimalService INSTANCE;
+    private static final AnimalsService INSTANCE;
 
     static {
       Gson gson = new GsonBuilder()
@@ -52,7 +51,7 @@ public interface AnimalService {
           .client(client)
           .build();
 
-      INSTANCE = retrofit.create(AnimalService.class);
+      INSTANCE = retrofit.create(AnimalsService.class);
     }
   }
 }

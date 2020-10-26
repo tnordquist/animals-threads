@@ -13,7 +13,6 @@ import edu.cnm.deepdive.animalsthreads.model.Animal;
 import edu.cnm.deepdive.animalsthreads.service.AnimalsRepository;
 import edu.cnm.deepdive.animalsthreads.service.AnimalsService;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import java.util.List;
 
 public class MainViewModel extends AndroidViewModel implements LifecycleObserver {
@@ -23,15 +22,13 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   private final MutableLiveData<Integer> selectedItem;
   private final AnimalsRepository animalsRepository;
   private final CompositeDisposable pending;
-  private final AnimalsService animalsService;
 
   public MainViewModel(@NonNull Application application) {
     super(application);
-    animalsService = AnimalsService.getInstance();
     animals = new MutableLiveData<>();
     selectedItem = new MutableLiveData<>();
     throwable = new MutableLiveData<>();
-    animalsRepository = new AnimalsRepository(application, animalsService);
+    animalsRepository = new AnimalsRepository(application);
     pending = new CompositeDisposable();
     loadAnimals();
   }
@@ -58,7 +55,8 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
         animalsRepository.loadAnimals()
             .subscribe(
                 animals::postValue,
-                this.throwable::postValue)
+                this.throwable::postValue
+            )
     );
 
   }

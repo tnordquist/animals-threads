@@ -13,20 +13,16 @@ public class AnimalsRepository {
 
   private final Context context;
   private final AnimalsService animalsService;
-  private String key = "";
 
-
-  public AnimalsRepository(Context context,
-      AnimalsService animalsService) {
+  public AnimalsRepository(Context context) {
     this.context = context;
-    this.key = key;
-    this.animalsService = animalsService;
+    this.animalsService = AnimalsService.getInstance();
   }
 
-  public Single loadAnimals() {
+  public Single<List<Animal>> loadAnimals() {
 
-    return Single.fromCallable(() -> animalsService.getApiKey()
-        .flatMapCompletable((key) -> (CompletableSource) animalsService.getAnimals(key.getKey()))
-        .subscribeOn(Schedulers.io()));
+    return animalsService.getApiKey()
+        .flatMap((key) -> animalsService.getAnimals(key.getKey()))
+        .subscribeOn(Schedulers.io());
   }
 }
